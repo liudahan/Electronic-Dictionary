@@ -24,7 +24,7 @@ ADDR = (HOST,PORT)
 # 流程控制
 def main():
     # 创建数据库连接
-    db = pymysql.connect('localhost','root','123456','dict')
+    db = pymysql.connect('localhost','liudahan','liudahan','dict')
 
     # 创建套接字
     s = socket()
@@ -62,7 +62,7 @@ def do_child(c,db):
     while True:
         data = c.recv(128).decode()
         print(c.getpeername(),':',data)
-        if (not data) or data[0] = 'E':
+        if (not data) or data[0] == 'E':
             c.close()
             sys.exit(0)
         if data[0] =='R':
@@ -80,8 +80,8 @@ def do_login(name,password):
     name = l[1]
     password = l[2]
     cursor = db.cursor()
-    sql = 'select * from userinfo where\
-    name = '%s' and password = '%s''\
+    sql = "select * from userinfo where\
+    name = '%s' and password = '%s'"\
     %(name,password)
 
     cursor.execute(sql)
@@ -90,7 +90,7 @@ def do_login(name,password):
     if r == None:
         c.send(b'Fail')
     else:
-        print(''%s'登录成功'%name)
+        print("'%s'登录成功"%name)
         c.send(b'OK')   
 
 def do_register(c,db,data):
@@ -99,19 +99,19 @@ def do_register(c,db,data):
     name = l[1]
     password = l[2]
     cursor = db.cursor()
-    sql = 'select * from user where \
-     name = '%s''%name
+    sql = "select * from user where \
+     name = '%s'"%name
     cursor.excute(sql)
     r = cursor.fetchone()
 
     if r != None:
         c.send(b'EXIST')
         return
-    sql = 'insert into user(username,\
+    sql = "insert into user(username,\
     password) values \
-     ('%s','%s')' %(name,password)
+     ('%s','%s')" %(name,password)
 
-     try:
+    try:
         cursor.excute(sql)
         db.commit()
         c.send(b'OK')
